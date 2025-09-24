@@ -1,0 +1,25 @@
+# NEXUS GOD MODE - CHANGELOG
+
+## v7.0.0 (Next-Gen) — 2025-09-24
+- Unified God Mode: All optimizations run in one safe, reversible flow.
+- Safety Layer: System Restore Point creation, targeted registry exports, and Dry-Run mode.
+- Rollback Hooks: Capture original power plan, registry keys, and restore them on rollback.
+- Ultimate Performance: Auto-import + enable if missing, with rollback to user’s original plan.
+- ADB Verification: Setprop with verification, plus pre/post gfxinfo FPS dump.
+- Centralized Logging: Detailed ChangeLog object + run report in `NEXUS-Backups`.
+- Modern Windows Tweaks: Game Mode, GPU scheduling, performance visual effects.
+- Legacy tweaks (bcdedit, netsh autotuning, thermal disable) still included but tagged as risky.
+- UX Improvements: cinematic splash, progress messages, clear success/fail summary.
+
+---
+
+## v6.1.5 (Legacy) — 2025-01-19
+- Original “all-in-one” optimizer with many ADB properties and Windows tweaks.
+- Included aggressive bcdedit, netsh, thermal control disable, registry hacks.
+- Basic logging and restore functions.
+
+---
+
+## v6.1.4 and earlier
+- Iterative legacy builds with emulator tweaks, PUBG DPI/FPS unlock attempts.
+- No rollback, minimal validation, no safety net.
