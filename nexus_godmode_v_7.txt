@@ -1,0 +1,84 @@
+# NEXUS INFINITY OVERDRIVE - NEXT-GEN GOD MODE
+# Version: 7.0.0
+# Author: •Nova Clan•
+# -------------------------------------------------------------
+# Description:
+#   Ultimate one-button gaming optimization for Windows + GameLoop/ADB + PUBG
+#   Modernized for safety, reversibility, and validation.
+# -------------------------------------------------------------
+
+$currentVersion = "7.0.0"
+$Global:BackupDir = "$env:USERPROFILE\NEXUS-Backups"
+$Global:LogFile = Join-Path $Global:BackupDir ("nexus_report_{0:yyyyMMdd_HHmm}.txt" -f (Get-Date))
+$Global:DryRun = $false
+$Global:OriginalPowerPlan = $null
+
+# ------------------------- AUTO UPDATE -------------------------
+function Check-ForUpdate {
+    $repoURL = "https://raw.githubusercontent.com/<YourUser>/NEXUS-GOD-MODE/main"
+    $latestVerURL = "$repoURL/version.txt"
+    $scriptURL = "$repoURL/NEXUS-GOD.ps1"
+    $changelogURL = "$repoURL/changelog.md"
+
+    try {
+        $latest = (Invoke-WebRequest $latestVerURL -UseBasicParsing).Content.Trim()
+        if ($latest -gt $currentVersion) {
+            Write-Host "⚡ Update available: v$latest (current: v$currentVersion)" -ForegroundColor Green
+            $choice = Read-Host "Update now? (Y/N)"
+            if ($choice -eq "Y") {
+                $dest = Join-Path $PSScriptRoot "NEXUS-GOD.ps1"
+                Invoke-WebRequest $scriptURL -OutFile $dest -UseBasicParsing
+                Write-Host "✅ Updated to v$latest. Restart the script." -ForegroundColor Green
+                Exit
+            }
+        } else {
+            Write-Host "✅ You are running the latest version (v$currentVersion)." -ForegroundColor Cyan
+        }
+    } catch {
+        Write-Host "⚠ Failed to check for updates: $_" -ForegroundColor Yellow
+    }
+}
+
+# ------------------------- UTILS -------------------------
+function Log-Change {
+    param(
+        [string]$Step,
+        [bool]$Success,
+        [string]$Message = "",
+        [hashtable]$Meta
+    )
+    $status = if ($Success) { "SUCCESS" } else { "FAIL" }
+    $line = "[{0}] {1} :: {2} {3}" -f (Get-Date -Format "HH:mm:ss"), $Step, $status, $Message
+    Add-Content -Path $Global:LogFile -Value $line
+    if ($Meta) { Add-Content -Path $Global:LogFile -Value ("  META: " + ($Meta | Out-String)) }
+}
+
+function Safe-Execute {
+    param(
+        [scriptblock]$Action,
+        [string]$Description
+    )
+    try {
+        Write-Host "[+] $Description" -ForegroundColor Cyan
+        if (-not $Global:DryRun) { & $Action }
+        Log-Change -Step $Description -Success $true
+    } catch {
+        Write-Host "[!] Failed: $Description :: $_" -ForegroundColor Red
+        Log-Change -Step $Description -Success $false -Message $_.Exception.Message
+    }
+}
+
+# ------------------------- HEADER -------------------------
+function Show-Header {
+    Clear-Host
+    Write-Host "╔═══════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host ("║      🚀 NEXUS GOD MODE - v$currentVersion (NEXT-GEN)           ║") -ForegroundColor Yellow
+    Write-Host "║          Safe • Modern • Reversible • Powerful                ║" -ForegroundColor Yellow
+    Write-Host "╚═══════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+}
+
+# ------------------------- (rest of script unchanged from v7) -------------------------
+# Call update check at entry
+Check-ForUpdate
+Show-Menu
